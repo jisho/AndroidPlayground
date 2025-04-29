@@ -8,18 +8,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NewsNetworkModule {
+
     @Provides
-    fun provideNewsApiService(): NewsApiService {
-        return Retrofit.Builder()
-            .baseUrl("http://api.mediastack.com/")
-            .addConverterFactory(MoshiConverterFactory.create())
-            .build()
-            .create(NewsApiService::class.java)
+    fun provideNewsApiService(retrofit: Retrofit): NewsApiService {
+        return retrofit.create(NewsApiService::class.java)
     }
 
     @Provides
