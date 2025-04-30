@@ -57,9 +57,11 @@ dependencies {
     api(libs.moshi)
 
     api(libs.okhttp.logging)
+    api(libs.okhttp)
+    api(libs.okhttp.urlconnection)
+    api(libs.mockwebserver)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
 }

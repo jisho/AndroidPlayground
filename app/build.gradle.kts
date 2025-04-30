@@ -25,6 +25,10 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            initWith(getByName("debug"))
+            matchingFallbacks += listOf("debug")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -33,6 +37,22 @@ android {
             )
         }
     }
+
+    flavorDimensions += "env"
+
+    productFlavors {
+        create("mock") {
+            dimension = "env"
+            applicationId = "com.jishojose.androidplayground.mock"
+            buildConfigField("boolean", "USE_MOCK", "true")
+        }
+        create("prod") {
+            dimension = "env"
+            applicationId = "com.jishojose.androidplayground"
+            buildConfigField("boolean", "USE_MOCK", "false")
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -42,6 +62,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

@@ -1,5 +1,7 @@
 package com.jishojose.androidplayground.androiddev.viewmodel
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jishojose.core.android.connectivity.NetworkStatusRepository
@@ -17,20 +19,17 @@ import javax.inject.Inject
 class CoroutineViewModel @Inject constructor(
     private val networkStatusRepository: NetworkStatusRepository,
 ): ViewModel() {
-    init {
-        println("CoroutineViewModel initialized")
+    val logs: SnapshotStateList<String> = mutableStateListOf()
 
+    private fun log(message: String) {
+        logs.add(message)
+    }
+    init {
         observeNetworkStatus()
         if (networkStatusRepository.state.value.isNotConnected()){
-            println("CoroutineViewModel: Network is disconnected")
+            log("Network is disconnected")
         }else
-            println("CoroutineViewModel: Network is connected")
-
-        viewModelScope.launch {
-           // coroutineConsecutiveExecution()
-            coroutineParallelExecution()
-           // callLongRunningTask()
-        }
+            log("Network is connected")
     }
 
     private fun observeNetworkStatus() {
@@ -40,41 +39,42 @@ class CoroutineViewModel @Inject constructor(
     }
 
     // Consecutive execution or Sequential execution
-    private fun coroutineConsecutiveExecution() {
+    fun coroutineConsecutiveExecution() {
         viewModelScope.launch {
-            println("coroutineConsecutiveExecution initialized")
-            someSuspendFunction()
-            someOtherSuspendFunction()
+            log("ConsecutiveExecution initialized")
+            someSuspendFunction(2000,1)
+            someSuspendFunction(2000,2)
         }
     }
 
     /* Parallel execution or Concurrent execution
     * async().await() each one immediately Sequential
     * async() all, then await()	⚡ Parallel	*/
-    private fun coroutineParallelExecution() {
+    fun coroutineParallelExecution() {
         viewModelScope.launch {
             println("coroutineParallelExecution initialized")
-            val task1 = async { someSuspendFunctionForParallelExecution(2000,1) }
-            val task2 = async { someSuspendFunctionForParallelExecution(1000,2) }
-            val task3 = async { someSuspendFunctionForParallelExecution(3000,3) }
 
-           // task1.await()
-           // task2.await()
-           // task3.await()
+            val task1 = async { someSuspendFunction(2000,1) }
+            val task2 = async { someSuspendFunction(1000,2) }
+            val task3 = async { someSuspendFunction(3000,3) }
+
+            task1.await()
+            task2.await()
+            task3.await()
             //or
            // awaitAll(task1, task2, task3)
            // joinAll(task1, task2, task3)
         }
     }
 
-    private fun callLongRunningTask() {
+    // long running operation
+    fun coroutineLongRunningTask() {
         viewModelScope.launch(Dispatchers.IO) {
-            println("Long Task Started")
-            // long running operation
+            log("Long Task Started")
             val result = performLongTask()
             withContext(Dispatchers.Main) {
                 // update UI with result
-                println("Result: $result")
+                log("Result: $result")
             }
         }
     }
@@ -85,21 +85,10 @@ class CoroutineViewModel @Inject constructor(
     }
 
 
-    private suspend fun someSuspendFunctionForParallelExecution(timeMillis: Long,count: Int) {
-        println("CoroutineViewModel: ParallelExecution $count started")
+    private suspend fun someSuspendFunction(timeMillis: Long,count: Int) {
+        log("task $count started")
         delay(timeMillis)
-        println("CoroutineViewModel: ParallelExecution $count completed")
+        log("task $count completed")
     }
 
-    private suspend fun someSuspendFunction() {
-        println("CoroutineViewModel: ConsecutiveExecution 1 started")
-        delay(2000)
-        println("CoroutineViewModel: ConsecutiveExecution 1 completed")
-    }
-
-    private suspend fun someOtherSuspendFunction() {
-        println("CoroutineViewModel: ConsecutiveExecution 2 started")
-        delay(2000)
-        println("CoroutineViewModel:  ConsecutiveExecution 2 completed")
-    }
 }
