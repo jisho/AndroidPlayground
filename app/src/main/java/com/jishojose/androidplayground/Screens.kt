@@ -11,6 +11,7 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector?
     data object AndroidDev : Screen("AndroidDev", "AndroidDev", Icons.Default.Settings)
     data object Home : Screen("Home", "Home", Icons.Default.Home)
     data object Coroutines : Screen("Coroutines", "Coroutines" )
+    data object Flow : Screen("Flow", "Flow" )
     companion object {
         val allTabScreens = listOf(Home, AndroidDev)
     }

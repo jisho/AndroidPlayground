@@ -15,6 +15,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jishojose.androidplayground.androiddev.ui.AndroidDevScreen
 import com.jishojose.androidplayground.androiddev.ui.CoroutineScreen
+import com.jishojose.androidplayground.androiddev.ui.FlowScreen
 import com.jishojose.androidplayground.ui.HomeScreen
 import com.jishojose.newsfeed.ui.NewsFeedScreen
 
@@ -71,6 +72,12 @@ fun AppNavHost(modifier: Modifier) {
 
                 composable(Screen.Coroutines.route) {
                     CoroutineScreen(
+                        navController = navController,
+                        modifier = Modifier
+                    )
+                }
+                composable(Screen.Flow.route) {
+                    FlowScreen(
                         navController = navController,
                         modifier = Modifier
                     )
